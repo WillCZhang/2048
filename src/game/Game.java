@@ -9,10 +9,13 @@ public class Game {
     public static final int BLOCK_PER_COL = BLOCK_PER_ROW;
     public static final int TOTEL_NUM = BLOCK_PER_COL * BLOCK_PER_ROW;
     public static final int MAX_NUM = 4096;
+    public static final int WIN = 2048;
     public static final Random RANDOM = new Random();
     private static Game instance;
     private int[] blocks;
     private Set<Integer> emptyBlcoks;
+    private int highestNum = 2;
+    private int score;
 
     public static Game getInstance() {
         if (instance == null)
@@ -34,6 +37,7 @@ public class Game {
     private Game() {
         blocks = new int[TOTEL_NUM];
         emptyBlcoks = new HashSet<Integer>();
+        score = 0;
         updateEmptyBlock();
         addNewBlock();
         addNewBlock();
@@ -45,27 +49,37 @@ public class Game {
         updateEmptyBlock();
     }
 
-    public void move(int keyCode) {
+    public void reset() {
+        for (int i = 0; i < TOTEL_NUM; i++)
+            blocks[i] = 0;
+        updateEmptyBlock();
+        addNewBlock();
+        addNewBlock();
+    }
+
+    public boolean move(int keyCode) {
+        boolean moved = false;
         if (keyCode == KeyEvent.VK_KP_LEFT || keyCode == KeyEvent.VK_LEFT) {
-            move();
+            moved = move();
         } else if (keyCode == KeyEvent.VK_KP_RIGHT || keyCode == KeyEvent.VK_RIGHT) {
             flip();
-            move();
+            moved = move();
             flip();
         } else if (keyCode == KeyEvent.VK_KP_UP || keyCode == KeyEvent.VK_UP) {
             rotateBlocksByDiagonal();
-            move();
+            moved = move();
             rotateBlocksByDiagonal();
         } else if (keyCode == KeyEvent.VK_KP_DOWN || keyCode == KeyEvent.VK_DOWN) {
             rotateBlocksByDiagonal();
             flip();
-            move();
+            moved = move();
             flip();
             rotateBlocksByDiagonal();
         }
+        return moved;
     }
 
-    private void move() {
+    private boolean move() {
         updateEmptyBlock();
         boolean isMoved = false;
         for (int col = 0; col < BLOCK_PER_COL; col++)
@@ -73,6 +87,7 @@ public class Game {
                 isMoved = true;
         if (isMoved)
             addNewBlock();
+        return isMoved;
     }
 
     private boolean handleRow(int col) {
@@ -93,6 +108,7 @@ public class Game {
                 setNumByPos(next, col, 0);
                 emptyBlcoks.add(getIndexByPos(next, col));
                 result = true;
+                score += getNumByPos(curr, col);
             }
         }
         return result;
@@ -143,9 +159,12 @@ public class Game {
 
     private void updateEmptyBlock() {
         emptyBlcoks.clear();
-        for (int i = 0; i < TOTEL_NUM; i++)
+        for (int i = 0; i < TOTEL_NUM; i++) {
             if (blocks[i] == 0)
                 emptyBlcoks.add(i);
+            else if (blocks[i] > highestNum)
+                highestNum = blocks[i];
+        }
     }
 
     private int getRandom(int bound) {
@@ -176,6 +195,10 @@ public class Game {
         return (y - index) * BLOCK_PER_ROW + x - index;
     }
 
+    public int getScore() {
+        return score;
+    }
+
     public boolean isGameOver() {
         if (emptyBlcoks.size() > 0)
             return false;
@@ -183,10 +206,14 @@ public class Game {
             for (int row = 0; row < BLOCK_PER_ROW - 1; row++)
                 if (getNumByPos(row, col) == getNumByPos(row + 1, col))
                     return false;
-        for (int row = 0; row < BLOCK_PER_COL; row++)
-            for (int col = 0; col < BLOCK_PER_ROW * (BLOCK_PER_COL - 1); col += BLOCK_PER_ROW)
-                if (getNumByPos(row, col) == getNumByPos(row, col += BLOCK_PER_ROW))
+        for (int row = 0; row < BLOCK_PER_ROW; row++)
+            for (int col = 0; col < BLOCK_PER_COL - 1; col++)
+                if (getNumByPos(row, col) == getNumByPos(row, col + 1))
                     return false;
         return true;
+    }
+
+    public boolean isWin() {
+        return highestNum == WIN;
     }
 }

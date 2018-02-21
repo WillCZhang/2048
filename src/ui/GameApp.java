@@ -10,9 +10,10 @@ import java.awt.event.KeyEvent;
 public class GameApp extends JFrame {
     public static final int WIDTH = 400;
     public static final int HEIGHT = 600;
-    private static final Color GAME_COLOUR = new Color(255, 226, 73);
+    private static final Color GAME_COLOUR = new Color(255, 238, 168);
     private Game game;
-    private GameRender renderer;
+    private ScoreRender scoreRender;
+    private GameRender gameRender;
 
     public GameApp() {
         super("2048");
@@ -20,7 +21,8 @@ public class GameApp extends JFrame {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setUndecorated(true);
         game = Game.getInstance();
-        renderer = new GameRender(game, this);
+        scoreRender = new ScoreRender(game, this);
+        gameRender = new GameRender(game, this);
         addKeyListener(new KeyHandler());
         centreOnScreen();
         setVisible(true);
@@ -30,7 +32,8 @@ public class GameApp extends JFrame {
     public void paint(Graphics graphics) {
         graphics.setColor(GAME_COLOUR);
         graphics.fillRect(0, 0, WIDTH, HEIGHT);
-        renderer.draw(graphics);
+        scoreRender.draw(graphics);
+        gameRender.draw(graphics);
     }
 
     private void centreOnScreen() {
@@ -41,8 +44,12 @@ public class GameApp extends JFrame {
     private class KeyHandler extends KeyAdapter {
         @Override
         public void keyPressed(KeyEvent e) {
-            game.move(e.getKeyCode());
-            update(getGraphics());
+            if (e.getKeyCode() == KeyEvent.VK_R)
+                game.reset();
+            else if (e.getKeyCode() == KeyEvent.VK_X)
+                System.exit(1);
+            if (game.move(e.getKeyCode()))
+                update(getGraphics());
         }
     }
 

@@ -5,10 +5,10 @@ import game.Game;
 import java.awt.*;
 
 public class GameRender {
-    private static final Color BG_COLOR = new Color(0xbbada0);
-    private static final String FONT_NAME = "Arial";
-    private static final int BLOCK_SIZE = 64;
-    private static final int TILES_MARGIN = 16;
+    public static final String FONT_NAME = "Arial";
+    public static final int TILES_MARGIN = 8;
+    public static final int BLOCK_SIZE = GameApp.WIDTH / Game.BLOCK_PER_ROW - 2 * TILES_MARGIN;
+    public static final int HEIGHT_BASE = GameApp.HEIGHT - GameApp.WIDTH;
     private Game game;
     private GameApp gameApp;
 
@@ -18,18 +18,19 @@ public class GameRender {
     }
 
     public void draw(Graphics graphics) {
-        for (int col = 0; col < Game.BLOCK_PER_COL; col++)
-            for (int row = 0; row < Game.BLOCK_PER_ROW; row++)
-                drawBlock(graphics, row, col);
-    }
-
-    private void drawBlock(Graphics graphics, int x, int y) {
         Graphics2D g = ((Graphics2D) graphics);
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_NORMALIZE);
+        for (int col = 0; col < Game.BLOCK_PER_COL; col++)
+            for (int row = 0; row < Game.BLOCK_PER_ROW; row++)
+                drawBlock(g, row, col);
+        drawWinOrLose(g);
+    }
+
+    private void drawBlock(Graphics g, int x, int y) {
         int value = game.getNumByPos(x, y);
         int xOffset = offsetCoors(x);
-        int yOffset = offsetCoors(y);
+        int yOffset = offsetCoors(y) + HEIGHT_BASE;
         g.setColor(getBackground(value));
         g.fillRoundRect(xOffset, yOffset, BLOCK_SIZE, BLOCK_SIZE, 14, 14);
         g.setColor(getForeground(value));
@@ -45,31 +46,45 @@ public class GameRender {
 
         if (value != 0)
             g.drawString(s, xOffset + (BLOCK_SIZE - w) / 2, yOffset + BLOCK_SIZE - (BLOCK_SIZE - h) / 2 - 2);
+    }
 
-//        if (myWin || myLose) {
-//            g.setColor(new Color(255, 255, 255, 30));
-//            g.fillRect(0, 0, getWidth(), getHeight());
-//            g.setColor(new Color(78, 139, 202));
-//            g.setFont(new Font(FONT_NAME, Font.BOLD, 48));
-//            if (myWin) {
-//                g.drawString("You won!", 68, 150);
-//            }
-//            if (myLose) {
-//                g.drawString("Game over!", 50, 130);
-//                g.drawString("You lose!", 64, 200);
-//            }
-//            if (myWin || myLose) {
-//                g.setFont(new Font(FONT_NAME, Font.PLAIN, 16));
-//                g.setColor(new Color(128, 128, 128, 128));
-//                g.drawString("Press ESC to play again", 80, getHeight() - 40);
-//            }
-//        }
-//        g.setFont(new Font(FONT_NAME, Font.PLAIN, 18));
-//        g.drawString("Score: " + myScore, 200, 365);
+    private void drawWinOrLose(Graphics2D g) {
+        boolean isWin = game.isWin();
+        boolean isLose = game.isGameOver();
+        if (isLose)
+            drawLose(g);
+        else if (isWin)
+            drawWin(g);
+    }
+
+    private void drawWin(Graphics2D g) {
+        prep(g);
+        g.drawString("You won!", 68, 150);
+        after(g);
+        g.drawString("Press R to play again, or C to continue", 80, gameApp.getHeight() - 40);
+    }
+
+    private void drawLose(Graphics2D g) {
+        prep(g);
+        g.drawString("Game over :(", 50, 155);
+        after(g);
+        g.drawString("Press R to play again", 80, 180);
+    }
+
+    private void prep(Graphics2D g) {
+        g.setColor(new Color(255, 255, 255, 30));
+        g.fillRect(0, 0, gameApp.getWidth(), gameApp.getHeight());
+        g.setColor(new Color(78, 139, 202));
+        g.setFont(new Font(FONT_NAME, Font.BOLD, 48));
+    }
+
+    private void after(Graphics2D g) {
+        g.setFont(new Font(FONT_NAME, Font.PLAIN, 22));
+        g.setColor(new Color(128, 128, 128, 128));
     }
 
     private static int offsetCoors(int arg) {
-        return arg * (TILES_MARGIN + BLOCK_SIZE) + TILES_MARGIN;
+        return arg * (TILES_MARGIN + BLOCK_SIZE + TILES_MARGIN) + TILES_MARGIN;
     }
 
     private Color getBackground(int value) {
