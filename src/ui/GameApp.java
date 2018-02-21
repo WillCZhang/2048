@@ -41,7 +41,7 @@ public class GameApp extends JFrame {
     private class KeyHandler extends KeyAdapter {
         @Override
         public void keyPressed(KeyEvent e) {
-            game.move(e);
+            game.move(e.getKeyCode());
             update(getGraphics());
         }
     }
