@@ -46,7 +46,6 @@ public class Game {
     private Game(int[] blocks) {
         this.blocks = blocks;
         emptyBlcoks = new HashSet<Integer>();
-        updateEmptyBlock();
     }
 
     public void reset() {
@@ -153,16 +152,18 @@ public class Game {
             emptySpot = emptyBlcoks.iterator().next();
             random--;
         }
+        assert blocks[emptySpot] == 0;
         blocks[emptySpot] = twoOrFour();
         emptyBlcoks.remove(emptySpot);
     }
 
     private void updateEmptyBlock() {
-        emptyBlcoks.clear();
         for (int i = 0; i < TOTEL_NUM; i++) {
             if (blocks[i] == 0)
                 emptyBlcoks.add(i);
-            else if (blocks[i] > highestNum)
+            else if (emptyBlcoks.contains(i))
+                emptyBlcoks.remove(i);
+            if (blocks[i] > highestNum)
                 highestNum = blocks[i];
         }
     }
@@ -202,13 +203,11 @@ public class Game {
     public boolean isGameOver() {
         if (emptyBlcoks.size() > 0)
             return false;
-        for (int col = 0; col < BLOCK_PER_COL; col++)
+        for (int col = 0; col < BLOCK_PER_COL - 1; col++)
             for (int row = 0; row < BLOCK_PER_ROW - 1; row++)
                 if (getNumByPos(row, col) == getNumByPos(row + 1, col))
                     return false;
-        for (int row = 0; row < BLOCK_PER_ROW; row++)
-            for (int col = 0; col < BLOCK_PER_COL - 1; col++)
-                if (getNumByPos(row, col) == getNumByPos(row, col + 1))
+                else if (getNumByPos(row, col) == getNumByPos(row, col + 1))
                     return false;
         return true;
     }
