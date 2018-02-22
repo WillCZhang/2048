@@ -44,9 +44,10 @@ public class GameApp extends JFrame {
     private class KeyHandler extends KeyAdapter {
         @Override
         public void keyPressed(KeyEvent e) {
-            if (e.getKeyCode() == KeyEvent.VK_R)
+            if (e.getKeyCode() == KeyEvent.VK_R) {
                 game.reset();
-            else if (e.getKeyCode() == KeyEvent.VK_X)
+                update(getGraphics());
+            } else if (e.getKeyCode() == KeyEvent.VK_X)
                 System.exit(1);
             if (game.move(e.getKeyCode()))
                 update(getGraphics());

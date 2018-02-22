@@ -103,11 +103,11 @@ public class GameRender {
         private static Color C16 = new Color(0xf59563);
         private static Color C32 = new Color(0xf67c5f);
         private static Color C64 = new Color(0xf65e3b);
-        private static Color C128 = new Color(0xedcf72);
-        private static Color C256 = new Color(0xedcc61);
-        private static Color C512 = new Color(0xedc850);
-        private static Color C1024 = new Color(0xedc53f);
-        private static Color C2048 = new Color(0xedc22e);
+        private static Color C128 = new Color(0xEEE061);
+        private static Color C256 = new Color(0xF0CF5E);
+        private static Color C512 = new Color(0xF1D37D);
+        private static Color C1024 = new Color(0xEDC965);
+        private static Color C2048 = new Color(0xDEAE6A);
         private static Color C4096 = new Color(0xED7A14);
         private static Color BRIGHT = new Color(0xf9f6f2);
         private static Color DARK = new Color(0x776e65);

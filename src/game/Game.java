@@ -9,7 +9,7 @@ public class Game {
     public static final int BLOCK_PER_COL = BLOCK_PER_ROW;
     public static final int TOTEL_NUM = BLOCK_PER_COL * BLOCK_PER_ROW;
     public static final int MAX_NUM = 4096;
-    public static final int WIN = 2048;
+    public static final int WIN = MAX_NUM;
     public static final Random RANDOM = new Random();
     private static Game instance;
     private int[] blocks;
