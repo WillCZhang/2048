@@ -14,6 +14,7 @@ public class Game {
     private static Game instance;
     private int[] blocks;
     private Set<Integer> emptyBlcoks;
+    private List<Integer> emptyBlockList;
     private int highestNum = 2;
     private int score;
 
@@ -37,6 +38,7 @@ public class Game {
     private Game() {
         blocks = new int[TOTEL_NUM];
         emptyBlcoks = new HashSet<Integer>();
+        emptyBlockList = new ArrayList<>(TOTEL_NUM);
         score = 0;
         updateEmptyBlock();
         addNewBlock();
@@ -146,12 +148,10 @@ public class Game {
 
     // TODO: prob need a better algorithm
     private void addNewBlock() {
+        emptyBlockList.clear();
+        emptyBlockList.addAll(emptyBlcoks);
         int random = getRandom(emptyBlcoks.size());
-        int emptySpot = 0;
-        while (random >= 0) {
-            emptySpot = emptyBlcoks.iterator().next();
-            random--;
-        }
+        int emptySpot = emptyBlockList.get(random);
         assert blocks[emptySpot] == 0;
         blocks[emptySpot] = twoOrFour();
         emptyBlcoks.remove(emptySpot);
@@ -203,11 +203,13 @@ public class Game {
     public boolean isGameOver() {
         if (emptyBlcoks.size() > 0)
             return false;
-        for (int col = 0; col < BLOCK_PER_COL - 1; col++)
+        for (int col = 0; col < BLOCK_PER_COL; col++)
             for (int row = 0; row < BLOCK_PER_ROW - 1; row++)
                 if (getNumByPos(row, col) == getNumByPos(row + 1, col))
                     return false;
-                else if (getNumByPos(row, col) == getNumByPos(row, col + 1))
+        for (int row = 0; row < BLOCK_PER_ROW; row++)
+            for (int col = 0; col < BLOCK_PER_COL - 1; col++)
+                if (getNumByPos(row, col) == getNumByPos(row, col + 1))
                     return false;
         return true;
     }

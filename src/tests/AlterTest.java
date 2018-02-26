@@ -8,17 +8,18 @@ public class AlterTest {
     public static void main(String[] args) {
         int[] blocks = {2,4,0,4,0,2,0,0,2,0,0,0,0,0,4,0};
 
+        // tests cannot run together sincen Game is a singleton
 //        Test1
-//        Game game1 = Game.getInstance(blocks);
-//        game1.move(KeyEvent.VK_RIGHT);
-//        int[] blocks1_expect = {0,0,2,8,0,0,0,2,0,0,0,2,0,0,0,4};
-//        checkDiff(game1, blocks1_expect);
+        Game game1 = Game.getInstance(blocks);
+        game1.move(KeyEvent.VK_RIGHT);
+        int[] blocks1_expect = {0,0,2,8,0,0,0,2,0,0,0,2,0,0,0,4};
+        checkDiff(game1, blocks1_expect);
 
 //        Test2
-        Game game2 = Game.getInstance(blocks);
-        game2.move(KeyEvent.VK_UP);
-        int[] blocks2_expect = {4,4,4,4,0,2,0,0,0,0,0,0,0,0,0,0};
-        checkDiff(game2, blocks2_expect);
+//        Game game2 = Game.getInstance(blocks);
+//        game2.move(KeyEvent.VK_UP);
+//        int[] blocks2_expect = {4,4,4,4,0,2,0,0,0,0,0,0,0,0,0,0};
+//        checkDiff(game2, blocks2_expect);
     }
 
     private static void checkDiff(Game game, int[] blockExpect) {

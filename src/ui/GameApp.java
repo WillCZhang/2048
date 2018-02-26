@@ -48,7 +48,7 @@ public class GameApp extends JFrame {
                 game.reset();
                 update(getGraphics());
             } else if (e.getKeyCode() == KeyEvent.VK_X)
-                System.exit(1);
+                System.exit(0);
             if (game.move(e.getKeyCode()))
                 update(getGraphics());
         }
